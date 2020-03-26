@@ -1,5 +1,5 @@
 # This is a basic workflow to help you get started with Actions
-name: CI
+name: CI/CD
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
@@ -19,9 +19,12 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: Checkout master
       uses: actions/checkout@v2
+
+    - name: Update SHA
+      run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/site/_meta
       
     - name: Build container image
-      run: docker build -t kayoticsully/death-tax-web-shell:echo $GITHUB_SHA | head -c7) .
+      run: docker build -t kayoticsully/death-tax-web-shell:$(echo $GITHUB_SHA | head -c7) .
     
     - name: Docker Login
       env:
