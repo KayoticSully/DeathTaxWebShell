@@ -45,11 +45,8 @@ jobs:
       with:
         args: kubernetes cluster kubeconfig show prod > $GITHUB_WORKSPACE/.kubeconfig
 
-    - name: Create namespace
-      run: kubectl --kubeconfig=$GITHUB_WORKSPACE/.kubeconfig apply -f $GITHUB_WORKSPACE/config/namespace.yml
-
     - name: Deploy to DigitalOcean Kubernetes
-      run: kubectl --kubeconfig=$GITHUB_WORKSPACE/.kubeconfig apply --namespace death-tax -f $GITHUB_WORKSPACE/config/deployment.yml
+      run: kubectl --kubeconfig=$GITHUB_WORKSPACE/.kubeconfig apply -f $GITHUB_WORKSPACE/config/deployment.yml
     
     - name: Verify deployment
       run: kubectl --kubeconfig=$GITHUB_WORKSPACE/.kubeconfig rollout status deployment/death-tax-web-shell
