@@ -27,7 +27,7 @@ spec:
       - name: death-tax-web-shell
         image: <IMAGE>
         ports:
-        - containerPort: 30103
+        - containerPort: 5000
         resources:
           requests:
             cpu: 100m
@@ -49,6 +49,6 @@ spec:
     - name: https
       protocol: TCP
       port: 443
-      targetPort: 30103
+      targetPort: 5000
   selector:
     app: death-tax-web-shell
