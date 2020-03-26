@@ -27,7 +27,7 @@ spec:
       - name: death-tax-web-shell
         image: <IMAGE>
         ports:
-        - containerPort: 5000
+        - containerPort: 3000
         resources:
           requests:
             cpu: 100m
@@ -43,13 +43,12 @@ metadata:
     external-dns.alpha.kubernetes.io/hostname: "deathtax.kayotic.io"
     service.beta.kubernetes.io/do-loadbalancer-certificate-id: "4bb2ae61-688e-4bc0-98da-fd064f53bf37"
     service.beta.kubernetes.io/do-loadbalancer-redirect-http-to-https: "true"
-    service.beta.kubernetes.io/do-loadbalancer-healthcheck-port: "5000"
 spec:
   type: LoadBalancer
   ports:
     - name: https
       protocol: TCP
       port: 443
-      targetPort: 5000
+      targetPort: 3000
   selector:
     app: death-tax-web-shell-service
