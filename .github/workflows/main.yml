@@ -24,7 +24,7 @@ jobs:
       - name: Build server
         run: |
           cd $GITHUB_WORKSPACE/server
-          go build .
+          CGO_ENABLED=0 go build .
         
       - name: Upload server binary
         uses: actions/upload-artifact@v1
