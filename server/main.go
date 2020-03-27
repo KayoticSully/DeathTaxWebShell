@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"log"
+	"os/exec"
 
 	"github.com/buaazp/fasthttprouter"
 	"github.com/valyala/fasthttp"
@@ -16,5 +18,15 @@ func main() {
 }
 
 func Index(ctx *fasthttp.RequestCtx) {
-	fmt.Fprint(ctx, "Welcome!\n")
+	cmd := exec.Command("echo", "DeathTax")
+	output := &bytes.Buffer{}
+	cmd.Stdout = output
+	cmd.Stderr = output
+
+	if err := cmd.Start(); err != nil {
+		log.Fatal(err)
+	}
+
+	cmd.Wait()
+	fmt.Fprint(ctx, fmt.Sprintf("%s", output.String()))
 }
