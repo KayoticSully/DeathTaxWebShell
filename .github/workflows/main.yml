@@ -9,10 +9,31 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  compile:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v2
+        
+      - name: Setup go
+        uses: actions/setup-go@v1
+        with:
+          go-version: '1.14.1' # The Go version to download (if necessary) and use.
+      
+      - name: Build server
+        run: |
+          cd $GITHUB_WORKSPACE/server
+          go build .
+        
+      - name: Upload server binary
+        uses: actions/upload-artifact@v1
+        with:
+          name: server
+          path: server/server
+    
+  deploy:
+    needs: [compile]
     runs-on: ubuntu-latest
 
     steps:
@@ -22,6 +43,11 @@ jobs:
 
     - name: Update SHA
       run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/site/_meta
+      
+    - name: Download server binary
+      uses: actions/download-artifact@v1
+      with:
+        name: server
       
     - name: Build container image
       run: docker build -t kayoticsully/death-tax-web-shell:$(echo $GITHUB_SHA | head -c7) .

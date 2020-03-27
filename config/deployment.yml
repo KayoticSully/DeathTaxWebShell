@@ -50,7 +50,7 @@ spec:
       protocol: TCP
       port: 443
       targetPort: 5000
-      
+
     - name: http
       protocol: TCP
       port: 80
@@ -58,3 +58,4 @@ spec:
 
   selector:
     app: death-tax-web-shell
+    
