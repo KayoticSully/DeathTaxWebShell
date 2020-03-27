@@ -1,0 +1,3 @@
+[submodule "DeathTax"]
+	path = DeathTax
+	url = git@github.com:kwazii/DeathTax.git
