@@ -1,6 +1,4 @@
-FROM nginx:alpine
+FROM scratch
 
-COPY config/nginx.conf /etc/nginx/conf.d/default.conf
-
-WORKDIR /usr/share/nginx/html
-COPY site .
+ADD server/server /
+CMD ["/server"]
