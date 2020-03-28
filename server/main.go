@@ -32,7 +32,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func api(w http.ResponseWriter, r *http.Request) {
-
+	// TODO: Websocket connection handling (errors, close event, etc)
 	wsConn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Print("upgrade:", err)
