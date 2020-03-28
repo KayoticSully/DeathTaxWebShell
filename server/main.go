@@ -1,32 +1,66 @@
 package main
 
 import (
-	"bytes"
-	"fmt"
 	"log"
-	"os/exec"
+	"net/http"
+	"strings"
 
-	"github.com/buaazp/fasthttprouter"
-	"github.com/valyala/fasthttp"
+	"github.com/KayoticSully/DeathTaxWebShell/server/deathtax"
+	"github.com/fasthttp/websocket"
 )
 
-func main() {
-	router := fasthttprouter.New()
-	router.GET("/", Index)
+var upgrader = websocket.Upgrader{} // use default options
 
-	log.Fatal(fasthttp.ListenAndServe(":5000", router.Handler))
+func main() {
+
+	http.HandleFunc("/", index)
+	http.Handle("/assets/", http.StripPrefix(strings.TrimRight("/assets/", "/"), http.FileServer(http.Dir("../site/assets"))))
+	http.HandleFunc("/api", api)
+
+	log.Println("Server Up!")
+	log.Fatal(http.ListenAndServe(":5000", nil))
 }
 
-func Index(ctx *fasthttp.RequestCtx) {
-	cmd := exec.Command("echo", "DeathTax")
-	output := &bytes.Buffer{}
-	cmd.Stdout = output
-	cmd.Stderr = output
+func index(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "../site/index.html")
+}
 
-	if err := cmd.Start(); err != nil {
-		log.Fatal(err)
+func api(w http.ResponseWriter, r *http.Request) {
+
+	wsConn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Print("upgrade:", err)
+		return
 	}
 
-	cmd.Wait()
-	fmt.Fprint(ctx, fmt.Sprintf("%s", output.String()))
+	defer wsConn.Close()
+
+	dt := deathtax.New()
+	dtResp := <-dt.Output
+
+	err = wsConn.WriteMessage(websocket.TextMessage, []byte(dtResp))
+	if err != nil {
+		log.Println("write:", err)
+		return
+	}
+
+	for {
+		msgType, msg, err := wsConn.ReadMessage()
+		if err != nil {
+			log.Println("read:", err)
+			return
+		}
+
+		dt.Input <- string(msg)
+		log.Println("Waiting for output")
+		dtResp = <-dt.Output
+
+		log.Printf("Output: %s\n", msg)
+
+		err = wsConn.WriteMessage(msgType, []byte(dtResp))
+		if err != nil {
+			log.Println("write:", err)
+			return
+		}
+	}
 }
