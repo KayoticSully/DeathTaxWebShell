@@ -4,4 +4,4 @@ ADD server/server /usr/local/bin/
 ADD DeathTax/DeathTax /usr/local/share/deathtax/
 Add site /usr/local/share/deathtax/web
 
-CMD ["server"]
+CMD ["/usr/local/bin/server"]
