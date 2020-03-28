@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"path"
 	"strings"
 
 	"github.com/KayoticSully/DeathTaxWebShell/server/deathtax"
@@ -11,10 +12,15 @@ import (
 
 var upgrader = websocket.Upgrader{} // use default options
 
+var sessions = []*deathtax.Session{}
+
+const webDir = "/usr/local/share/deathtax/web"
+
 func main() {
+	assetDir := path.Join(webDir, "assets")
 
 	http.HandleFunc("/", index)
-	http.Handle("/assets/", http.StripPrefix(strings.TrimRight("/assets/", "/"), http.FileServer(http.Dir("../site/assets"))))
+	http.Handle("/assets/", http.StripPrefix(strings.TrimRight("/assets/", "/"), http.FileServer(http.Dir(assetDir))))
 	http.HandleFunc("/api", api)
 
 	log.Println("Server Up!")
@@ -22,7 +28,7 @@ func main() {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "../site/index.html")
+	http.ServeFile(w, r, path.Join(webDir, "index.html"))
 }
 
 func api(w http.ResponseWriter, r *http.Request) {
@@ -35,32 +41,8 @@ func api(w http.ResponseWriter, r *http.Request) {
 
 	defer wsConn.Close()
 
-	dt := deathtax.New()
-	dtResp := <-dt.Output
+	session := deathtax.NewSession()
+	sessions = append(sessions, session)
 
-	err = wsConn.WriteMessage(websocket.TextMessage, []byte(dtResp))
-	if err != nil {
-		log.Println("write:", err)
-		return
-	}
-
-	for {
-		msgType, msg, err := wsConn.ReadMessage()
-		if err != nil {
-			log.Println("read:", err)
-			return
-		}
-
-		dt.Input <- string(msg)
-		log.Println("Waiting for output")
-		dtResp = <-dt.Output
-
-		log.Printf("Output: %s\n", msg)
-
-		err = wsConn.WriteMessage(msgType, []byte(dtResp))
-		if err != nil {
-			log.Println("write:", err)
-			return
-		}
-	}
+	session.Run(wsConn)
 }
