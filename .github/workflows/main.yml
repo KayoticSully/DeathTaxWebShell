@@ -40,6 +40,8 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: Checkout master
       uses: actions/checkout@v2
+      with:
+        submodules: true
 
     - name: Update SHA
       run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/site/_meta
