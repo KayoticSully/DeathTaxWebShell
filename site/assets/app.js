@@ -24,6 +24,6 @@ document.addEventListener('keyup', function (event) {
 
     var key = event.key || event.keyCode;
     if (InputKeys.includes(key.toUpperCase())) {
-        apiSocket.send(`${letter}\n`);
+        apiSocket.send(`${key}\n`);
     }
 });
