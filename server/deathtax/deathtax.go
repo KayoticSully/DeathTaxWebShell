@@ -44,7 +44,6 @@ func (s *Session) Run(wsConn *websocket.Conn) {
 	// can get started whenever the scheduled pleases.
 	go inputPump(stdin, wsConn)
 	go outputPump(stdout, wsConn)
-	go fooPump(s.process.Stdin, wsConn)
 
 	log.Println("Starting SubProcess")
 
@@ -83,25 +82,12 @@ func outputPump(stdout io.ReadCloser, wsConn *websocket.Conn) {
 
 	for stdScanner.Scan() {
 		text = []byte(stdScanner.Text())
-		err = wsConn.WriteMessage(websocket.TextMessage, text)
-		if err != nil {
-			log.Println("write:", err)
-			return
-		}
-	}
-}
-
-func fooPump(stdin io.Reader, wsConn *websocket.Conn) {
-	var text []byte
-	var err error
-	stdScanner := bufio.NewScanner(stdin)
-
-	for stdScanner.Scan() {
-		text = []byte(stdScanner.Text())
-		err = wsConn.WriteMessage(websocket.TextMessage, text)
-		if err != nil {
-			log.Println("write:", err)
-			return
+		if text != "" {
+			err = wsConn.WriteMessage(websocket.TextMessage, text)
+			if err != nil {
+				log.Println("write:", err)
+				return
+			}
 		}
 	}
 }
