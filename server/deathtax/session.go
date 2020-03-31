@@ -5,7 +5,6 @@ import (
 	"io"
 	"log"
 	"os/exec"
-	"strings"
 
 	"github.com/fasthttp/websocket"
 )
@@ -84,12 +83,9 @@ func (s *Session) outputPump(wsConn *websocket.Conn) {
 
 	for stdScanner.Scan() {
 		text = []byte(stdScanner.Text())
-		if strings.TrimSpace(string(text)) != "" {
-			err = wsConn.WriteMessage(websocket.TextMessage, text)
-			if err != nil {
-				log.Println("write:", err)
-				return
-			}
+		if err = wsConn.WriteMessage(websocket.TextMessage, text); err != nil {
+			log.Println("write:", err)
+			return
 		}
 	}
 }
