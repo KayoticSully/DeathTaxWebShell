@@ -3,6 +3,7 @@
 function displayOutput(msg) {
     let elem = document.querySelector("#output");
     elem.innerHTML += `<div class="line">${msg.data}</div>`;
+    elem.scrollTop = elem.scrollHeight;
 }
 
 function connect() {

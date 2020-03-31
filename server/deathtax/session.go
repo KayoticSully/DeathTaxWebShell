@@ -13,6 +13,8 @@ import (
 // Session powershell process object
 type Session struct {
 	process *exec.Cmd
+	stdin   io.WriteCloser
+	stdout  io.ReadCloser
 }
 
 // NewSession returns a new running DeathTax process
@@ -26,31 +28,37 @@ func NewSession() *Session {
 }
 
 // Run starts the session and proxies input/output to a websocket
-func (s *Session) Run(wsConn *websocket.Conn) {
+func (s *Session) Run() {
+	var err error
+
 	// Input and Output pipes need to be created before the go
 	// routines start. Otherwise data will be missed between process
 	// start and go routine start.  There is an unknowable delay between
 	// telling a go routine to start and when it actually starts.
-	stdin, err := s.process.StdinPipe()
+	s.stdin, err = s.process.StdinPipe()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	stdout, err := s.process.StdoutPipe()
+	s.stdout, err = s.process.StdoutPipe()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Start data pumps. Now that the pipes have been created, these
 	// can get started whenever the scheduled pleases.
-	go inputPump(stdin, wsConn)
-	go outputPump(stdout, wsConn)
 
 	log.Println("Starting SubProcess")
 
-	if err := s.process.Run(); err != nil {
+	if err := s.process.Start(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+// RunWebsocketProxy pipes input and output channels from/to the websocket
+func (s *Session) RunWebsocketProxy(wsConn *websocket.Conn) {
+	go inputPump(s.stdin, wsConn)
+	outputPump(s.stdout, wsConn)
 }
 
 func inputPump(stdin io.WriteCloser, wsConn *websocket.Conn) {

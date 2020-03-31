@@ -13,6 +13,7 @@ import (
 var upgrader = websocket.Upgrader{} // use default options
 
 var sessions = []*deathtax.Session{}
+var instanceFactory *deathtax.PooledFactory
 
 const webDir = "/usr/local/share/deathtax/web"
 
@@ -22,6 +23,8 @@ func main() {
 	http.HandleFunc("/", index)
 	http.Handle("/assets/", http.StripPrefix(strings.TrimRight("/assets/", "/"), http.FileServer(http.Dir(assetDir))))
 	http.HandleFunc("/api", api)
+
+	instanceFactory = deathtax.NewPooledFactory(3, 10)
 
 	log.Println("Server Up!")
 	log.Fatal(http.ListenAndServe(":5000", nil))
@@ -41,8 +44,8 @@ func api(w http.ResponseWriter, r *http.Request) {
 
 	defer wsConn.Close()
 
-	session := deathtax.NewSession()
+	session := instanceFactory.GetInstance()
 	sessions = append(sessions, session)
 
-	session.Run(wsConn)
+	session.RunWebsocketProxy(wsConn)
 }
