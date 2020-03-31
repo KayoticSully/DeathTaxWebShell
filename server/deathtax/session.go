@@ -57,14 +57,14 @@ func (s *Session) Run() {
 
 // RunWebsocketProxy pipes input and output channels from/to the websocket
 func (s *Session) RunWebsocketProxy(wsConn *websocket.Conn) {
-	go inputPump(s.stdin, wsConn)
-	outputPump(s.stdout, wsConn)
+	go s.inputPump(wsConn)
+	s.outputPump(wsConn)
 }
 
-func inputPump(stdin io.WriteCloser, wsConn *websocket.Conn) {
+func (s *Session) inputPump(wsConn *websocket.Conn) {
 	// stdin is created outside of the go routine but it should
 	// be setup to close when the go routine exits
-	defer stdin.Close()
+	defer s.stdin.Close()
 
 	var err error
 	var msg []byte
@@ -76,18 +76,18 @@ func inputPump(stdin io.WriteCloser, wsConn *websocket.Conn) {
 			return
 		}
 
-		_, err = io.WriteString(stdin, string(msg))
+		_, err = io.WriteString(s.stdin, string(msg))
 	}
 }
 
-func outputPump(stdout io.ReadCloser, wsConn *websocket.Conn) {
+func (s *Session) outputPump(wsConn *websocket.Conn) {
 	// stdout is created outside of the go routine but it should
 	// be setup to close when the go routine exits
-	defer stdout.Close()
+	defer s.stdout.Close()
 
 	var text []byte
 	var err error
-	stdScanner := bufio.NewScanner(stdout)
+	stdScanner := bufio.NewScanner(s.stdout)
 
 	for stdScanner.Scan() {
 		text = []byte(stdScanner.Text())
