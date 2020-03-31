@@ -2,7 +2,13 @@
 // Setup message handling
 function displayOutput(msg) {
     let elem = document.querySelector("#output");
-    elem.innerHTML += `<div class="line">${msg.data}</div>`;
+
+    let data = msg.data;
+    if(data == "\n") {
+        data = "<br />"
+    }
+
+    elem.innerHTML += `<div class="line">${data}</div>`;
     elem.scrollTop = elem.scrollHeight;
 }
 
