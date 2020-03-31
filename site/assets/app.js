@@ -5,7 +5,7 @@ function displayOutput(msg) {
 
     let data = msg.data;
     if(data == "\n") {
-        data = "<br />"
+        data = "&nbsp;"
     }
 
     elem.innerHTML += `<div class="line">${data}</div>`;
@@ -22,7 +22,7 @@ function connect() {
 let apiSocket = connect();
 
 // Listen for input keypresses
-const InputKeys = ['Y', 'N', 'S'];
+const InputKeys = ['Y', 'N', 'S', '?'];
 
 document.addEventListener('keyup', function (event) {
     if (event.defaultPrevented) {
@@ -31,6 +31,7 @@ document.addEventListener('keyup', function (event) {
 
     var key = event.key || event.keyCode;
     if (InputKeys.includes(key.toUpperCase())) {
+        displayOutput("\n");
         apiSocket.send(`${key}\n`);
     }
 });
