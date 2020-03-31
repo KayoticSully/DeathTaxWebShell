@@ -19,39 +19,32 @@ type Session struct {
 
 // NewSession returns a new running DeathTax process
 func NewSession() *Session {
-	s := &Session{
-		// TODO: Refactor to standard / configurable path
-		process: exec.Command("pwsh", "/usr/local/share/deathtax/DeathTax"),
-	}
-
-	return s
-}
-
-// Run starts the session and proxies input/output to a websocket
-func (s *Session) Run() {
-	var err error
+	process := exec.Command("pwsh", "/usr/local/share/deathtax/DeathTax")
 
 	// Input and Output pipes need to be created before the go
 	// routines start. Otherwise data will be missed between process
 	// start and go routine start.  There is an unknowable delay between
 	// telling a go routine to start and when it actually starts.
-	s.stdin, err = s.process.StdinPipe()
+	stdin, err := process.StdinPipe()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	s.stdout, err = s.process.StdoutPipe()
+	stdout, err := process.StdoutPipe()
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	// Start data pumps. Now that the pipes have been created, these
-	// can get started whenever the scheduled pleases.
 
 	log.Println("Starting SubProcess")
 
-	if err := s.process.Start(); err != nil {
+	if err := process.Start(); err != nil {
 		log.Fatal(err)
+	}
+
+	return &Session{
+		process: process,
+		stdin:   stdin,
+		stdout:  stdout,
 	}
 }
 
