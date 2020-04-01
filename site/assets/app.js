@@ -7,6 +7,7 @@ const inputLinePattern = /\(default is \"\S\"\):\s*$/;
 document.addEventListener('DOMContentLoaded', function() {
     // Connect to the api
     apiSocket = connect();
+    document.addEventListener('keyup', handeKeyEvent);
 }, false);
 
 function connect() {
@@ -42,22 +43,11 @@ function handleMessage(msg) {
             console.log("Input Line!");
             inputKeys = Array.from(line.matchAll(inputKeyPattern)).map(match => match[1]);
             console.log(inputKeys);
-            enableInput();
         }
 
         elem.innerHTML += `<div class="line">${line}</div>`;
         elem.scrollTop = elem.scrollHeight;
     }
-}
-
-function enableInput() {
-    console.log("Enable Input")
-    document.addEventListener('keyup', handeKeyEvent);
-}
-
-function disableInput() {
-    console.log("Disable Input")
-    document.removeEventListener('keyup', handeKeyEvent);
 }
 
 function handeKeyEvent(event) {
@@ -68,7 +58,6 @@ function handeKeyEvent(event) {
     let allowedKeys = inputKeys;
     console.log("key Handler");
     console.log(allowedKeys);
-    disableInput()
 
 
     var key = event.key || event.keyCode;
@@ -77,6 +66,7 @@ function handeKeyEvent(event) {
         apiSocket.send(`${key}\n`);
     }
 
+    console.log("Reset keys");
     inputKeys = [];
     console.log(allowedKeys);
 }
