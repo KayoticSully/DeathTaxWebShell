@@ -1,7 +1,6 @@
 package deathtax
 
 import (
-	"log"
 	"sync"
 )
 
@@ -33,27 +32,19 @@ func NewPooledFactory(size int) *PooledFactory {
 // after initial create. This always returns true once the initial
 // processes are booted
 func (pf *PooledFactory) Initialized() bool {
-	log.Println("Checking Inititalized")
-	for i, inst := range pf.instances {
-		log.Printf("%d: %t\n", i, inst.IsReady())
-	}
-
-	pf.mux.RLock()
 	if pf.initialized {
 		return true
 	}
 
+	pf.mux.RLock()
+	defer pf.mux.RUnlock()
 	for _, s := range pf.instances {
 		if !s.IsReady() {
 			return false
 		}
 	}
-	pf.mux.RUnlock()
 
-	pf.mux.Lock()
 	pf.initialized = true
-	pf.mux.Unlock()
-
 	return true
 }
 
