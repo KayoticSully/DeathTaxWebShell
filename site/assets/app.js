@@ -2,8 +2,7 @@ var appendNext = false;
 var apiSocket;
 var inputKeys = [];
 const inputKeyPattern = /\[(\S)\]\s\S*/g;
-const inputLinePattern = /\(default is .*\):$/;
-
+const inputLinePattern = /\(default is \"\S\"\):\s*$/;
 
 document.addEventListener('DOMContentLoaded', function() {
     // Connect to the api
