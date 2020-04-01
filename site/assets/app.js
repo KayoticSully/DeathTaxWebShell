@@ -26,23 +26,18 @@ function handleMessage(msg) {
         appendNext = false;
 
         // force a newline after an append
-        data = "&nbsp;";
+        data = "\n";
     }
 
     let elem = document.querySelector("#output");
 
-    if(data == "\n") {
-        data = "&nbsp;"
-    }
-
     for(line of data.split("\n")) {
-        console.log("Input Match?");
-        console.log(line);
-        console.log(line.match(inputLinePattern));
         if(line.match(inputLinePattern)) {
-            console.log("Input Line!");
             inputKeys = Array.from(line.matchAll(inputKeyPattern)).map(match => match[1]);
-            console.log(inputKeys);
+        }
+
+        if(line == "") {
+            line = "&nbsp;";
         }
 
         elem.innerHTML += `<div class="line">${line}</div>`;
@@ -55,18 +50,13 @@ function handeKeyEvent(event) {
         return;
     }
     
-    let allowedKeys = inputKeys;
-    console.log("key Handler");
-    console.log(allowedKeys);
-
-
+    // Prevent any further input than the one keystroke
+    let allowedKeys = Array.from(inputKeys);
+    inputKeys = [];
+    
     var key = event.key || event.keyCode;
-    if (inputKeys.includes(key.toUpperCase())) {
+    if (allowedKeys.includes(key.toUpperCase())) {
         appendNext = true;
         apiSocket.send(`${key}\n`);
     }
-
-    console.log("Reset keys");
-    inputKeys = [];
-    console.log(allowedKeys);
 }
