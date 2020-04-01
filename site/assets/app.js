@@ -2,10 +2,10 @@ var appendNext = false;
 
 // Setup message handling
 function writeOutput(msg) {
-
     if(appendNext) {
         let elem = document.querySelector("#output .line:last-child");
         elem.innerHTML += msg.data;
+        console.log(`|${msg.data}|`);
         appendNext = false;
     } else {
         let elem = document.querySelector("#output");
