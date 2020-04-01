@@ -7,7 +7,6 @@ import (
 	"os/exec"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/fasthttp/websocket"
 )
@@ -18,10 +17,9 @@ type Session struct {
 	stdin   io.WriteCloser
 	stdout  io.ReadCloser
 
-	startupMux    sync.Mutex
-	stdoutScanner *bufio.Scanner
-	firstLine     string
-	proxyStarted  bool
+	stdoutReadLock sync.Mutex
+	stdoutScanner  *bufio.Scanner
+	firstLine      string
 }
 
 // NewSession returns a new running DeathTax process
@@ -53,10 +51,9 @@ func NewSession() *Session {
 		stdin:   stdin,
 		stdout:  stdout,
 
-		startupMux:    sync.Mutex{},
-		stdoutScanner: bufio.NewScanner(stdout),
-		firstLine:     "",
-		proxyStarted:  false,
+		stdoutReadLock: sync.Mutex{},
+		stdoutScanner:  bufio.NewScanner(stdout),
+		firstLine:      "",
 	}
 
 	go s.primeProcess()
@@ -75,17 +72,13 @@ func (s *Session) IsReady() bool {
 }
 
 func (s *Session) primeProcess() {
-	s.startupMux.Lock()
-	for s.firstLine = ""; s.firstLine == ""; s.firstLine = s.stdoutScanner.Text() {
-		s.startupMux.Unlock()
+	s.stdoutReadLock.Lock()
+	defer s.stdoutReadLock.Unlock()
 
-		// Take a small break
-		time.Sleep(time.Millisecond * 250)
+	for s.stdoutScanner.Scan() {
+		s.firstLine = s.stdoutScanner.Text()
 
-		// If the proxy started while sleeping, stop checking for output
-		s.startupMux.Lock()
-		if s.proxyStarted {
-			s.startupMux.Unlock()
+		if s.firstLine != "" {
 			return
 		}
 	}
@@ -118,17 +111,14 @@ func (s *Session) outputPump(wsConn *websocket.Conn) {
 	var text []byte
 	var err error
 
-	s.startupMux.Lock()
-	s.proxyStarted = true
+	s.stdoutReadLock.Lock()
+	defer s.stdoutReadLock.Unlock()
 
-	if s.firstLine != "" {
-		err = wsConn.WriteMessage(websocket.TextMessage, []byte(s.firstLine))
-		if err != nil {
-			log.Println("write:", err)
-			return
-		}
+	err = wsConn.WriteMessage(websocket.TextMessage, []byte(s.firstLine))
+	if err != nil {
+		log.Println("write:", err)
+		return
 	}
-	s.startupMux.Unlock()
 
 	for s.stdoutScanner.Scan() {
 		text = []byte(s.stdoutScanner.Text())
