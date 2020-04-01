@@ -9,7 +9,7 @@ function displayOutput(msg) {
     }
 
     for(line of data.split("\n")) {
-        elem.innerHTML += `<div class="line">${data}</div>`;
+        elem.innerHTML += `<div class="line">${line}</div>`;
         elem.scrollTop = elem.scrollHeight;
     }
 }
