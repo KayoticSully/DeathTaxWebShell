@@ -6,6 +6,8 @@ import (
 	"log"
 	"os/exec"
 	"strings"
+	"sync"
+	"time"
 
 	"github.com/fasthttp/websocket"
 )
@@ -15,6 +17,11 @@ type Session struct {
 	process *exec.Cmd
 	stdin   io.WriteCloser
 	stdout  io.ReadCloser
+
+	startupMux    sync.Mutex
+	stdoutScanner *bufio.Scanner
+	firstLine     string
+	proxyStarted  bool
 }
 
 // NewSession returns a new running DeathTax process
@@ -41,17 +48,47 @@ func NewSession() *Session {
 		log.Fatal(err)
 	}
 
-	return &Session{
+	s := &Session{
 		process: process,
 		stdin:   stdin,
 		stdout:  stdout,
+
+		startupMux:    sync.Mutex{},
+		stdoutScanner: bufio.NewScanner(stdout),
+		firstLine:     "",
+		proxyStarted:  false,
 	}
+
+	go s.primeProcess()
+	return s
 }
 
 // RunWebsocketProxy pipes input and output channels from/to the websocket
 func (s *Session) RunWebsocketProxy(wsConn *websocket.Conn) {
 	go s.inputPump(wsConn)
 	s.outputPump(wsConn)
+}
+
+// IsReady returns true if the session is fully booted and available for use.
+func (s *Session) IsReady() bool {
+	return s.firstLine != ""
+}
+
+func (s *Session) primeProcess() {
+	s.startupMux.Lock()
+	for s.firstLine = ""; s.firstLine == ""; s.firstLine = s.stdoutScanner.Text() {
+		s.startupMux.Unlock()
+
+		// Take a small break
+		time.Sleep(time.Millisecond * 250)
+
+		// If the proxy started while sleeping, stop checking for output
+		s.startupMux.Lock()
+		if s.proxyStarted {
+			s.startupMux.Unlock()
+			return
+		}
+	}
 }
 
 func (s *Session) inputPump(wsConn *websocket.Conn) {
@@ -80,10 +117,21 @@ func (s *Session) outputPump(wsConn *websocket.Conn) {
 
 	var text []byte
 	var err error
-	stdScanner := bufio.NewScanner(s.stdout)
 
-	for stdScanner.Scan() {
-		text = []byte(stdScanner.Text())
+	s.startupMux.Lock()
+	s.proxyStarted = true
+
+	if s.firstLine != "" {
+		err = wsConn.WriteMessage(websocket.TextMessage, []byte(s.firstLine))
+		if err != nil {
+			log.Println("write:", err)
+			return
+		}
+	}
+	s.startupMux.Unlock()
+
+	for s.stdoutScanner.Scan() {
+		text = []byte(s.stdoutScanner.Text())
 
 		// Whitespace or blank output means a blank line
 		// was emitted from the script. Send a newline.
@@ -96,6 +144,5 @@ func (s *Session) outputPump(wsConn *websocket.Conn) {
 			log.Println("write:", err)
 			return
 		}
-
 	}
 }

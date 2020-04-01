@@ -15,19 +15,25 @@ var upgrader = websocket.Upgrader{} // use default options
 var sessions = []*deathtax.Session{}
 var instanceFactory *deathtax.PooledFactory
 
+const publicAPIPort = ":5000"
 const webDir = "/usr/local/share/deathtax/web"
 
 func main() {
+	// Start this as early as possible
+	instanceFactory = deathtax.NewPooledFactory(5)
+
+	// Boot up k8s internal endpoints
+	go startHealthCheckAPI()
+
 	assetDir := path.Join(webDir, "assets")
+	publicMux := http.NewServeMux()
 
-	http.HandleFunc("/", index)
-	http.Handle("/assets/", http.StripPrefix(strings.TrimRight("/assets/", "/"), http.FileServer(http.Dir(assetDir))))
-	http.HandleFunc("/api", api)
-
-	instanceFactory = deathtax.NewPooledFactory(3, 10)
+	publicMux.HandleFunc("/", index)
+	publicMux.Handle("/assets/", http.StripPrefix(strings.TrimRight("/assets/", "/"), http.FileServer(http.Dir(assetDir))))
+	publicMux.HandleFunc("/api", api)
 
 	log.Println("Server Up!")
-	log.Fatal(http.ListenAndServe(":5000", nil))
+	log.Fatal(http.ListenAndServe(publicAPIPort, publicMux))
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
