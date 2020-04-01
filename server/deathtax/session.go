@@ -145,9 +145,9 @@ func scanLinesWithInput(data []byte, atEOF bool) (advance int, token []byte, err
 	trimmedData := bytes.TrimSpace(data)
 	if i := bytes.LastIndexByte(data, ':'); i == len(trimmedData)-1 {
 		// We have a request for input
-		return i + 1, data, nil
+		return len(data), data, nil
 	} else {
-		log.Printf("String: %s  Index: %d   Length: %d\n", string(data), bytes.LastIndexByte(data, ':'), len(data))
+		log.Printf("String: %s  Index: %d   Length: %d\n", string(data), bytes.LastIndexByte(data, ':'), len(trimmedData)-1)
 	}
 
 	return bufio.ScanLines(data, atEOF)
