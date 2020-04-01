@@ -118,6 +118,7 @@ func (s *Session) outputPump(wsConn *websocket.Conn) {
 	s.stdoutReadLock.Lock()
 	defer s.stdoutReadLock.Unlock()
 
+	log.Printf("Sending first line: %s\n", s.firstLine)
 	err = wsConn.WriteMessage(websocket.TextMessage, []byte(s.firstLine))
 	if err != nil {
 		log.Println("write:", err)
@@ -143,7 +144,7 @@ func (s *Session) outputPump(wsConn *websocket.Conn) {
 
 func scanLinesWithInput(data []byte, atEOF bool) (advance int, token []byte, err error) {
 	trimmedData := bytes.TrimSpace(data)
-	if i := bytes.LastIndexByte(data, ':'); i == len(trimmedData) {
+	if i := bytes.LastIndexByte(data, ':'); i == len(trimmedData)-1 {
 		// We have a request for input
 		return len(data), data, nil
 	}
