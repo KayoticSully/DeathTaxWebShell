@@ -1,8 +1,8 @@
-var appendNext = false;
 var apiSocket;
 var inputKeys = [];
 const inputKeyPattern = /\[(\S)\]\s\S*/g;
 const inputLinePattern = /\(default is \"\S\"\):\s*$/;
+const lastLineSelector = "#output .line:last-child";
 
 document.addEventListener('DOMContentLoaded', function() {
     // Connect to the api
@@ -18,31 +18,32 @@ function connect() {
 
 // Setup message handling
 function handleMessage(msg) {
-    let data = msg.data;
-
-    if(appendNext) {
-        let elem = document.querySelector("#output .line:last-child");
-        elem.innerHTML += data;
-        appendNext = false;
-
-        // force a newline after an append
-        data = "\n";
-    }
-
-    let elem = document.querySelector("#output");
-
-    for(line of data.split("\n")) {
+    for(line of msg.data.split("\n")) {
         if(line.match(inputLinePattern)) {
             inputKeys = Array.from(line.matchAll(inputKeyPattern)).map(match => match[1]);
-        }
+        } else if(line.length == 1) {
+            let lastLineText = document.querySelector(lastLineSelector).innerHTML;
 
-        if(line == "") {
+            if(line == lastLineText[lastLineText.length-1]) {
+                line = "&nbsp;";
+            }
+        } else if(line == "") {
             line = "&nbsp;";
         }
 
-        elem.innerHTML += `<div class="line">${line}</div>`;
-        elem.scrollTop = elem.scrollHeight;
+        addLine(line);
     }
+}
+
+function addLine(line) {
+    let elem = document.querySelector("#output");
+    elem.innerHTML += `<div class="line">${line}</div>`;
+    elem.scrollTop = elem.scrollHeight;
+}
+
+function appendToLastLine(str) {
+    let elem = document.querySelector(lastLineSelector);
+    elem.innerHTML += str;
 }
 
 function handeKeyEvent(event) {
@@ -56,7 +57,7 @@ function handeKeyEvent(event) {
     
     var key = event.key || event.keyCode;
     if (allowedKeys.includes(key.toUpperCase())) {
-        appendNext = true;
+        appendToLastLine(key);
         apiSocket.send(`${key}\n`);
     }
 }
