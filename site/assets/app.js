@@ -1,22 +1,30 @@
+var appendNext = false;
 
 // Setup message handling
-function displayOutput(msg) {
-    let elem = document.querySelector("#output");
+function writeOutput(msg) {
 
-    let data = msg.data;
-    if(data == "\n") {
-        data = "&nbsp;"
-    }
+    if(appendNext) {
+        let elem = document.querySelector("#output .line:last-child");
+        elem.innerHTML += msg.data;
+        appendNext = false;
+    } else {
+        let elem = document.querySelector("#output");
 
-    for(line of data.split("\n")) {
-        elem.innerHTML += `<div class="line">${line}</div>`;
-        elem.scrollTop = elem.scrollHeight;
+        let data = msg.data;
+        if(data == "\n") {
+            data = "&nbsp;"
+        }
+    
+        for(line of data.split("\n")) {
+            elem.innerHTML += `<div class="line">${line}</div>`;
+            elem.scrollTop = elem.scrollHeight;
+        }
     }
 }
 
 function connect() {
     let ws = new WebSocket("wss://deathtax.kayotic.io/api");
-    ws.onmessage = displayOutput;
+    ws.onmessage = writeOutput;
     return ws;
 }
 
@@ -33,7 +41,7 @@ document.addEventListener('keyup', function (event) {
 
     var key = event.key || event.keyCode;
     if (InputKeys.includes(key.toUpperCase())) {
-        displayOutput({ data: "\n"});
+        appendNext = true;
         apiSocket.send(`${key}\n`);
     }
 });
