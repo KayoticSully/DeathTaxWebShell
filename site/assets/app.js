@@ -19,6 +19,7 @@ function connect() {
 // Setup message handling
 function handleMessage(msg) {
     for(line of msg.data.split("\n")) {
+        console.log(line);
         if(line.match(inputLinePattern)) {
             inputKeys = Array.from(line.matchAll(inputKeyPattern)).map(match => match[1]);
         } else if(line.length == 1) {
