@@ -8,8 +8,10 @@ function displayOutput(msg) {
         data = "&nbsp;"
     }
 
-    elem.innerHTML += `<div class="line">${data}</div>`;
-    elem.scrollTop = elem.scrollHeight;
+    for(line of data.split("\n")) {
+        elem.innerHTML += `<div class="line">${data}</div>`;
+        elem.scrollTop = elem.scrollHeight;
+    }
 }
 
 function connect() {
