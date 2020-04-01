@@ -2,23 +2,26 @@ var appendNext = false;
 
 // Setup message handling
 function writeOutput(msg) {
+    let data = msg.data;
+
     if(appendNext) {
         let elem = document.querySelector("#output .line:last-child");
-        elem.innerHTML += msg.data;
-        console.log(`|${msg.data}|`);
+        elem.innerHTML += data;
         appendNext = false;
-    } else {
-        let elem = document.querySelector("#output");
 
-        let data = msg.data;
-        if(data == "\n") {
-            data = "&nbsp;"
-        }
-    
-        for(line of data.split("\n")) {
-            elem.innerHTML += `<div class="line">${line}</div>`;
-            elem.scrollTop = elem.scrollHeight;
-        }
+        // force a newline after an append
+        data = "&nbsp;";
+    }
+
+    let elem = document.querySelector("#output");
+
+    if(data == "\n") {
+        data = "&nbsp;"
+    }
+
+    for(line of data.split("\n")) {
+        elem.innerHTML += `<div class="line">${line}</div>`;
+        elem.scrollTop = elem.scrollHeight;
     }
 }
 

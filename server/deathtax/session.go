@@ -118,7 +118,6 @@ func (s *Session) outputPump(wsConn *websocket.Conn) {
 	s.stdoutReadLock.Lock()
 	defer s.stdoutReadLock.Unlock()
 
-	log.Printf("Sending first line: %s\n", s.firstLine)
 	err = wsConn.WriteMessage(websocket.TextMessage, []byte(s.firstLine))
 	if err != nil {
 		log.Println("write:", err)
