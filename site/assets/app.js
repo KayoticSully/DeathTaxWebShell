@@ -1,7 +1,23 @@
 var appendNext = false;
+var apiSocket;
+var inputKeys = [];
+const inputKeyPattern = /\[(\S)\]\s\S*/g;
+const inputLinePattern = /\(default is .*\):$/;
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Connect to the api
+    apiSocket = connect();
+}, false);
+
+function connect() {
+    let ws = new WebSocket("wss://deathtax.kayotic.io/api");
+    ws.onmessage = handleMessage;
+    return ws;
+}
 
 // Setup message handling
-function writeOutput(msg) {
+function handleMessage(msg) {
     let data = msg.data;
 
     if(appendNext) {
@@ -20,31 +36,40 @@ function writeOutput(msg) {
     }
 
     for(line of data.split("\n")) {
+        if(line.match(inputLinePattern)) {
+            inputKeys = Array.from(line.matchAll(inputKeyPattern)).map(match => match[1])
+            enableInput()
+        }
+
         elem.innerHTML += `<div class="line">${line}</div>`;
         elem.scrollTop = elem.scrollHeight;
     }
 }
 
-function connect() {
-    let ws = new WebSocket("wss://deathtax.kayotic.io/api");
-    ws.onmessage = writeOutput;
-    return ws;
+function enableInput() {
+    document.addEventListener('keyup', handeKeyEvent);
 }
 
-// Connect to the api
-let apiSocket = connect();
+function disableInput() {
+    document.removeEventListener('keyup', handeKeyEvent);
+}
 
-// Listen for input keypresses
-const InputKeys = ['Y', 'N', 'S', '?'];
-
-document.addEventListener('keyup', function (event) {
+function handeKeyEvent(event) {
     if (event.defaultPrevented) {
         return;
     }
+    
+    let allowedKeys = inputKeys;
+    disableInput()
+    console.log(allowedKeys);
+
 
     var key = event.key || event.keyCode;
-    if (InputKeys.includes(key.toUpperCase())) {
+    if (inputKeys.includes(key.toUpperCase())) {
         appendNext = true;
         apiSocket.send(`${key}\n`);
     }
-});
+
+    inputKeys = [];
+    console.log(allowedKeys);
+}
