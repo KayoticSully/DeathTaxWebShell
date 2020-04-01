@@ -2,6 +2,7 @@ package deathtax
 
 import (
 	"bufio"
+	"bytes"
 	"io"
 	"log"
 	"os/exec"
@@ -46,13 +47,16 @@ func NewSession() *Session {
 		log.Fatal(err)
 	}
 
+	scanner := bufio.NewScanner(stdout)
+	scanner.Split(scanLinesWithInput)
+
 	s := &Session{
 		process: process,
 		stdin:   stdin,
 		stdout:  stdout,
 
 		stdoutReadLock: sync.Mutex{},
-		stdoutScanner:  bufio.NewScanner(stdout),
+		stdoutScanner:  scanner,
 		firstLine:      "",
 	}
 
@@ -135,4 +139,15 @@ func (s *Session) outputPump(wsConn *websocket.Conn) {
 			return
 		}
 	}
+}
+
+func scanLinesWithInput(data []byte, atEOF bool) (advance int, token []byte, err error) {
+	if i := bytes.LastIndexByte(data, ':'); i == len(data) {
+		// We have a request for input
+		return i + 1, data[0:i], nil
+	} else {
+		log.Printf("String: %s  Index: %d   Length: %d\n", string(data), bytes.LastIndexByte(data, ':'), len(data))
+	}
+
+	return bufio.ScanLines(data, atEOF)
 }
