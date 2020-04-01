@@ -142,11 +142,17 @@ func (s *Session) outputPump(wsConn *websocket.Conn) {
 }
 
 func scanLinesWithInput(data []byte, atEOF bool) (advance int, token []byte, err error) {
-	trimmedData := bytes.TrimSpace(data)
-	if i := bytes.LastIndexByte(data, ':'); i == len(trimmedData)-1 {
-		// We have a request for input
-		return len(data), data, nil
+	advance, token, err = bufio.ScanLines(data, atEOF)
+
+	if advance == 0 && token == nil && err == nil {
+		// If standard scanner did not find a token, try to find an input line
+		trimmedData := bytes.TrimSpace(data)
+
+		if i := bytes.LastIndexByte(data, ':'); i == len(trimmedData)-1 {
+			// We have a request for input
+			return len(data), data, nil
+		}
 	}
 
-	return bufio.ScanLines(data, atEOF)
+	return advance, token, err
 }
