@@ -142,9 +142,10 @@ func (s *Session) outputPump(wsConn *websocket.Conn) {
 }
 
 func scanLinesWithInput(data []byte, atEOF bool) (advance int, token []byte, err error) {
-	if i := bytes.LastIndexByte(data, ':'); i == len(data) {
+	trimmedData := bytes.TrimSpace(data)
+	if i := bytes.LastIndexByte(data, ':'); i == len(trimmedData)-1 {
 		// We have a request for input
-		return i + 1, data[0:i], nil
+		return i + 1, data, nil
 	} else {
 		log.Printf("String: %s  Index: %d   Length: %d\n", string(data), bytes.LastIndexByte(data, ':'), len(data))
 	}
