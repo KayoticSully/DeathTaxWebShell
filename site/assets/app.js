@@ -36,9 +36,14 @@ function handleMessage(msg) {
     }
 
     for(line of data.split("\n")) {
+        console.log("Input Match?");
+        console.log(line);
+        console.log(line.match(inputLinePattern));
         if(line.match(inputLinePattern)) {
-            inputKeys = Array.from(line.matchAll(inputKeyPattern)).map(match => match[1])
-            enableInput()
+            console.log("Input Line!");
+            inputKeys = Array.from(line.matchAll(inputKeyPattern)).map(match => match[1]);
+            console.log(inputKeys);
+            enableInput();
         }
 
         elem.innerHTML += `<div class="line">${line}</div>`;
@@ -47,10 +52,12 @@ function handleMessage(msg) {
 }
 
 function enableInput() {
+    console.log("Enable Input")
     document.addEventListener('keyup', handeKeyEvent);
 }
 
 function disableInput() {
+    console.log("Disable Input")
     document.removeEventListener('keyup', handeKeyEvent);
 }
 
@@ -60,8 +67,9 @@ function handeKeyEvent(event) {
     }
     
     let allowedKeys = inputKeys;
-    disableInput()
+    console.log("key Handler");
     console.log(allowedKeys);
+    disableInput()
 
 
     var key = event.key || event.keyCode;
