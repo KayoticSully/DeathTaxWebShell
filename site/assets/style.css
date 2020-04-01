@@ -31,11 +31,11 @@ hr.underline {
 }
 
 #output {
+    color: #AFAFAF;
     display: flex;
     flex-direction: column;
     font-size: 30pt;
-    width: 80vw;
-    height: 70vh;
+    max-height: 70vh;
     overflow-y: scroll;
     overflow-x: visible;
     overflow: -moz-scrollbars-none;
@@ -45,4 +45,8 @@ hr.underline {
 
 #output .space {
     flex-grow: 1;
+}
+
+#output .line:nth-last-child(-n+4) {
+    color: #FFFFFF;
 }
