@@ -18,8 +18,16 @@ function connect() {
 
 // Setup message handling
 function handleMessage(msg) {
-    for(line of msg.data.split("\n")) {
-        console.log(line);
+    let data = msg.data;
+
+    // A single newline will create two newlines on 
+    // a split("\n"). Convert it to a blank string to
+    // replicate a single new line output.
+    if(data == "\n") {
+        data = "";
+    }
+
+    for(line of data.split("\n")) {
         if(line.match(inputLinePattern)) {
             inputKeys = Array.from(line.matchAll(inputKeyPattern)).map(match => match[1]);
         } else if(line.length == 1) {
