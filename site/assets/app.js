@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', function() {
 function connect() {
     let ws = new WebSocket("wss://deathtax.kayotic.io/api");
     ws.onmessage = handleMessage;
+    ws.onclose = function(msg) {
+        this.onmessage = null;
+    };
     return ws;
 }
 
