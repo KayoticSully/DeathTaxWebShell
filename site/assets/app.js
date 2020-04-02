@@ -68,5 +68,8 @@ function handeKeyEvent(event) {
     if (allowedKeys.includes(key.toUpperCase())) {
         appendToLastLine(key);
         apiSocket.send(`${key}\n`);
+    } else {
+        // re-enable input if key was not valid input
+        inputKeys = allowedKeys;
     }
 }
