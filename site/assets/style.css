@@ -4,20 +4,59 @@ html {
 }
 
 body {
-    padding: 30px 0px 0px 0px;
     font-family: 'Saira', sans-serif;
     color: #FFFFFF;
 }
 
-.title {
-    font-size: 32pt;
+a {
     color: #FFFFFF;
-    letter-spacing: 15px;
 }
 
-.title .fa-skull-crossbones {
-    font-size: 24pt;
-    margin: 0px 20px 0px 15px;
+a:hover {
+    color: #AFAFAF;
+}
+
+.nav-spacer {
+    width: 200px;
+}
+
+.github-links {
+    display: block;
+    padding: 20px 50px 0px 0px;
+}
+
+ul.github-links li {
+    display: block;
+    font-size: 16pt;
+}
+
+ul.github-links li:first-child {
+    margin-bottom: 10px;
+}
+
+
+ul.github-links li .icon-label {
+    width: 140px;
+    margin-right: 10px;
+    display: inline-block;
+    text-align: right;
+}
+
+ul.github-links li i, ul.github-links li svg {
+    font-size: 20pt;
+}
+
+.site-title {
+    font-size: 32pt;
+    font-weight: 600;
+    color: #FFFFFF;
+    letter-spacing: 15px;
+    margin: 30px 0px 0px 0px;
+}
+
+.site-title .fa-skull-crossbones {
+    font-size: 26pt;
+    margin: 0px 5px 3px 0px;
 }
 
 hr.underline {
