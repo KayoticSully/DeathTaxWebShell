@@ -44,8 +44,15 @@ func main() {
 
 func index(w http.ResponseWriter, r *http.Request) {
 	fp := filepath.Join(webDir, "index.html")
-	tmpl, _ := template.ParseFiles(fp)
-	tmpl.ExecuteTemplate(w, "index", gitShas)
+	tmpl, err := template.ParseFiles(fp)
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = tmpl.ExecuteTemplate(w, "index", gitShas)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func api(w http.ResponseWriter, r *http.Request) {
