@@ -37,6 +37,7 @@ ul.level-list li {
 
 .github-links {
     padding: 20px 50px 0px 0px;
+    color: #AFAFAF;
 }
 
 ul.github-links li:first-child {
@@ -45,7 +46,7 @@ ul.github-links li:first-child {
 
 
 ul.github-links li .icon-label {
-    width: 140px;
+    width: 340px;
     margin-right: 10px;
     display: inline-block;
     text-align: right;
@@ -53,6 +54,7 @@ ul.github-links li .icon-label {
 
 ul.github-links li i, ul.github-links li svg {
     font-size: 20pt;
+    vertical-align: bottom;
 }
 
 .site-title {
@@ -107,9 +109,11 @@ hr.underline {
     color: #FFFFFF;
 }
 
-.site-footer {
+#footer {
     position: absolute;
     bottom: 0;
     width: 100%;
     padding: 20px;
+    text-align: center;
+    color: #AFAFAF;
 }

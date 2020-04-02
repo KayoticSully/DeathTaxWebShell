@@ -24,14 +24,16 @@
       <div class="level-right">
         <ul class="level-item level-list github-links">
           <li>
-            <a href="https://github.com/kwazii/DeathTax">
-              <span class="icon-label">Original Script</span> <i class="fab fa-github"></i>
-            </a>
+              <span class="icon-label">
+                Original Script (<a href="https://github.com/kwazii/DeathTax/commit/{{.ScriptSha}}">{{.ScriptSha}}</a>)
+              </span>
+              <a href="https://github.com/kwazii/DeathTax"><i class="fab fa-github"></i></a>
           </li>
           <li>
-            <a href="https://github.com/KayoticSully/DeathTaxWebShell">
-              <span class="icon-label">Web Shell</span> <i class="fab fa-github"></i>
-            </a>
+            <span class="icon-label">
+              Web Shell (<a href="https://github.com/KayoticSully/DeathTaxWebShell/commit/{{.WebShellSha}}">{{.WebShellSha}}</a>)
+            </span>
+            <a href="https://github.com/KayoticSully/DeathTaxWebShell"><i class="fab fa-github"></i></a>
           </li>
         </ul>
       </div>
@@ -39,6 +41,9 @@
     <hr class="underline" />
     <section id="output" class="container">
       <div class="space"></div>
+    </section>
+    <section id="footer">
+      <a href="https://github.com/kwazii/DeathTax/commit/{{.ScriptSha}}">Original Script Version {{.ScriptSha}}</a> - <a href="https://github.com/KayoticSully/DeathTaxWebShell/commit/{{.WebShellSha}}">Web Shell Version {{.WebShellSha}}</a>
     </section>
   </body>
 </html>
