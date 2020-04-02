@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"encoding/csv"
-	"strings"
+	"os"
 )
 
 type GitShas struct {
@@ -11,8 +11,13 @@ type GitShas struct {
 	ScriptSha string
 }
 
-func loadGitShas(dir string) *GitShas {
-	r := csv.NewReader(strings.NewReader(dir))
+func loadGitShas(path string) *GitShas {
+	file, err := os.Open(path)
+	if err != nil {
+		log.Fatal("Could not open csv")
+	}
+
+	r := csv.NewReader(file)
 	record, err := r.Read()
 	if err != nil {
 		log.Fatal("CSV Parse Error")
