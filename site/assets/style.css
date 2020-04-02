@@ -90,3 +90,10 @@ hr.underline {
 #output .line:nth-last-child(-n+4) {
     color: #FFFFFF;
 }
+
+.site-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 20px;
+}

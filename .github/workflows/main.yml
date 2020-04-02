@@ -44,7 +44,7 @@ jobs:
         submodules: true
 
     - name: Update SHA
-      run: echo $GITHUB_SHA,$(git submodule foreach -q git rev-parse HEAD) > $GITHUB_WORKSPACE/site/_meta
+      run: echo $(echo $GITHUB_SHA | head -c7),$(git submodule foreach -q git rev-parse HEAD | head -c7) > $GITHUB_WORKSPACE/site/_meta
       
     - name: Download server binary
       uses: actions/download-artifact@v1
