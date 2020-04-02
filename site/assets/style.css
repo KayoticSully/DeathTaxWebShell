@@ -17,7 +17,7 @@ a:hover {
 }
 
 .nav-spacer {
-    width: 200px;
+    width: 160px;
 }
 
 .github-links {
@@ -56,7 +56,7 @@ ul.github-links li i, ul.github-links li svg {
 
 .site-title .fa-skull-crossbones {
     font-size: 26pt;
-    margin: 0px 5px 3px 0px;
+    margin: 0px 20px 3px 15px;
 }
 
 hr.underline {
@@ -73,6 +73,7 @@ hr.underline {
     color: #AFAFAF;
     display: flex;
     flex-direction: column;
+    margin-top: 10px;
     font-size: 26pt;
     max-height: 70vh;
     overflow-y: scroll;
