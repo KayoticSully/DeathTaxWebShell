@@ -30,9 +30,9 @@ ul.level-list li {
 }
 
 .git-versions li .version-label {
-    width: 140px;
+    /* width: 140px; */
     display: inline-block;
-    text-align: right;
+    /* text-align: right; */
 }
 
 .github-links {
