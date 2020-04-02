@@ -14,13 +14,14 @@ function connect() {
     let ws = new WebSocket("wss://deathtax.kayotic.io/api");
     ws.onmessage = handleMessage;
     ws.onclose = function(msg) {
-        this.onmessage = null;
+      console.log(msg);
     };
     return ws;
 }
 
 // Setup message handling
 function handleMessage(msg) {
+    console.log(msg);
     let data = msg.data;
 
     // A single newline will create two newlines on 
