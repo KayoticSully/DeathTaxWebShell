@@ -48,8 +48,9 @@ func index(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
+	log.Println(tmpl.Name())
 
-	err = tmpl.ExecuteTemplate(w, "index", gitShas)
+	err = tmpl.ExecuteTemplate(w, "index.html", gitShas)
 	if err != nil {
 		log.Println(err)
 	}
