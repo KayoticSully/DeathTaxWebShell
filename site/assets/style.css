@@ -8,6 +8,12 @@ body {
     color: #FFFFFF;
 }
 
+.ruler {
+    height: 100%;
+    width: 50%;
+    background-color: red;
+}
+
 a {
     color: #AFAFAF;
 }
@@ -20,19 +26,13 @@ a:hover {
     display: block;
 }
 
+.level-spacer {
+    width: 260px;
+}
+
 ul.level-list li {
     display: block;
     font-size: 14pt;
-}
-
-.git-versions {
-    padding: 20px 0px 0px 50px;
-}
-
-.git-versions li .version-label {
-    /* width: 140px; */
-    display: inline-block;
-    /* text-align: right; */
 }
 
 .github-links {
@@ -46,7 +46,7 @@ ul.github-links li:first-child {
 
 
 ul.github-links li .icon-label {
-    width: 340px;
+    width: 140px;
     margin-right: 10px;
     display: inline-block;
     text-align: right;
@@ -74,7 +74,7 @@ ul.github-links li i, ul.github-links li svg {
 
 .site-title .fa-skull-crossbones {
     font-size: 26pt;
-    margin: 0px 20px 3px 15px;
+    margin: 0px 5px 3px 0px;
 }
 
 hr.underline {

@@ -8,15 +8,8 @@
   </head>
   <body>
     <nav class="level">
-      <div class="level-left">
-        <ul class="level-item level-list git-versions">
-          <li>
-            <a href="https://github.com/kwazii/DeathTax/commit/{{.ScriptSha}}">v. {{.ScriptSha}} <span class="version-label">Original Script</span></a>
-          </li>
-          <li>
-            <a href="https://github.com/KayoticSully/DeathTaxWebShell/commit/{{.WebShellSha}}">v. {{.WebShellSha}} <span class="version-label">Web Shell</span></a>
-          </li>
-        </ul>
+      <div class="level-left level-spacer">
+        &nbsp;
       </div>
       <div class="site-title level-item has-text-centered">
         <a href="https://deathtax.kayotic.io">DEATH <i class="fas fa-skull-crossbones"></i> TAX</a>
@@ -24,16 +17,16 @@
       <div class="level-right">
         <ul class="level-item level-list github-links">
           <li>
-              <span class="icon-label">
-                Original Script (<a href="https://github.com/kwazii/DeathTax/commit/{{.ScriptSha}}">{{.ScriptSha}}</a>)
-              </span>
-              <a href="https://github.com/kwazii/DeathTax"><i class="fab fa-github"></i></a>
+              <a href="https://github.com/kwazii/DeathTax">
+                <span class="icon-label">Original Script</span>
+                <i class="fab fa-github"></i>
+              </a>
           </li>
           <li>
-            <span class="icon-label">
-              Web Shell (<a href="https://github.com/KayoticSully/DeathTaxWebShell/commit/{{.WebShellSha}}">{{.WebShellSha}}</a>)
-            </span>
-            <a href="https://github.com/KayoticSully/DeathTaxWebShell"><i class="fab fa-github"></i></a>
+            <a href="https://github.com/KayoticSully/DeathTaxWebShell">
+              <span class="icon-label">Web Shell</span>
+              <i class="fab fa-github"></i>
+            </a>
           </li>
         </ul>
       </div>
@@ -43,7 +36,7 @@
       <div class="space"></div>
     </section>
     <section id="footer">
-      <a href="https://github.com/kwazii/DeathTax/commit/{{.ScriptSha}}">Original Script Version {{.ScriptSha}}</a> - <a href="https://github.com/KayoticSully/DeathTaxWebShell/commit/{{.WebShellSha}}">Web Shell Version {{.WebShellSha}}</a>
+      <a href="https://github.com/kwazii/DeathTax/commit/{{.ScriptSha}}">Original script commit {{.ScriptSha}}</a> - <a href="https://github.com/KayoticSully/DeathTaxWebShell/commit/{{.WebShellSha}}">Web shell commit {{.WebShellSha}}</a>
     </section>
   </body>
 </html>
