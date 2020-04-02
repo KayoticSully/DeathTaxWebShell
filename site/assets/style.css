@@ -9,25 +9,34 @@ body {
 }
 
 a {
-    color: #FFFFFF;
-}
-
-a:hover {
     color: #AFAFAF;
 }
 
-.nav-spacer {
-    width: 160px;
+a:hover {
+    color: #FFFFFF;
+}
+
+.level-list {
+    display: block;
+}
+
+ul.level-list li {
+    display: block;
+    font-size: 14pt;
+}
+
+.git-versions {
+    padding: 20px 0px 0px 50px;
+}
+
+.git-versions li .version-label {
+    width: 140px;
+    display: inline-block;
+    text-align: right;
 }
 
 .github-links {
-    display: block;
     padding: 20px 50px 0px 0px;
-}
-
-ul.github-links li {
-    display: block;
-    font-size: 16pt;
 }
 
 ul.github-links li:first-child {
@@ -48,10 +57,17 @@ ul.github-links li i, ul.github-links li svg {
 
 .site-title {
     font-size: 32pt;
-    font-weight: 600;
-    color: #FFFFFF;
+    font-weight: 600;   
     letter-spacing: 15px;
-    margin: 30px 0px 0px 0px;
+    margin: 30px 34px 0px 0px;
+}
+
+.site-title a {
+    color: #FFFFFF;
+}
+
+.site-title a:hover {
+    color: #AFAFAF;
 }
 
 .site-title .fa-skull-crossbones {
