@@ -24,7 +24,7 @@ const webDir = "/usr/local/share/deathtax/web"
 
 func main() {
 	// Start this as early as possible
-	instanceFactory = deathtax.NewPooledFactory(7)
+	instanceFactory = deathtax.NewPooledFactory(4)
 
 	// Boot up k8s internal endpoints
 	go startHealthCheckAPI()
