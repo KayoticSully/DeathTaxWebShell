@@ -37,7 +37,7 @@ function handleMessage(msg) {
         if(line.match(inputLinePattern)) {
             let inputMatches = Array.from(line.matchAll(inputKeyPattern));
 
-            for(match of inputMatches) {
+            for(const match of inputMatches) {
                 inputKeys.push(match[1]);
                 let inputButton = `<div class="key-input-button" onclick="clickKeyInput('${match[1]}')">${match[0]}</div>`;
                 line = line.replace(match[0], inputButton);
