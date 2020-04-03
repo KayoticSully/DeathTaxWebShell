@@ -9,7 +9,7 @@ const lastLineSelector = "#output .line:last-child";
 document.addEventListener('DOMContentLoaded', function() {
     // Connect to the api
     apiSocket = connect();
-    document.addEventListener('keyup', handeKeyEvent);
+    document.addEventListener('keyup', handleKeyEvent);
 }, false);
 
 function connect() {
@@ -39,7 +39,7 @@ function handleMessage(msg) {
 
             for(const match of inputMatches) {
                 inputKeys.push(match[1]);
-                let inputButton = `<div class="key-input-button" onclick="clickKeyInput('${match[1]}')">${match[0]}</div>`;
+                let inputButton = `<span class="key-input-button" onclick="clickKeyInput('${match[1]}')">${match[0]}</span>`;
                 line = line.replace(match[0], inputButton);
             }
 
@@ -74,7 +74,7 @@ function clickKeyInput(key) {
     });
 }
 
-function handeKeyEvent(event) {
+function handleKeyEvent(event) {
     if (event.defaultPrevented) {
         return;
     }
