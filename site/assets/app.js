@@ -1,3 +1,5 @@
+'use strict';
+
 var apiSocket;
 var inputKeys = [];
 const inputKeyPattern = /\[(\S)\]\s\S*/g;
@@ -33,7 +35,14 @@ function handleMessage(msg) {
 
     for(line of data.split("\n")) {
         if(line.match(inputLinePattern)) {
-            inputKeys = Array.from(line.matchAll(inputKeyPattern)).map(match => match[1]);
+            let inputMatches = Array.from(line.matchAll(inputKeyPattern));
+
+            for(match of inputMatches) {
+                inputKeys.push(match[1]);
+                let inputButton = `<div class="key-input-button" onclick="clickKeyInput('${match[1]}')">${match[0]}</div>`;
+                line = line.replace(match[0], inputButton);
+            }
+
         } else if(line.length == 1) {
             let lastLineText = document.querySelector(lastLineSelector).innerHTML;
 
@@ -57,6 +66,12 @@ function addLine(line) {
 function appendToLastLine(str) {
     let elem = document.querySelector(lastLineSelector);
     elem.innerHTML += str;
+}
+
+function clickKeyInput(key) {
+    handleKeyEvent({
+        data: key,
+    });
 }
 
 function handeKeyEvent(event) {

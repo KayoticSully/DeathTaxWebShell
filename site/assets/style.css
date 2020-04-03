@@ -100,6 +100,10 @@ hr.underline {
     color: #FFFFFF;
 }
 
+.key-input-button {
+    text-decoration: underline;
+}
+
 #footer {
     position: absolute;
     bottom: 0;
