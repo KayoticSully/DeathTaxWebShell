@@ -70,7 +70,7 @@ function appendToLastLine(str) {
 
 function clickKeyInput(key) {
     handleKeyEvent({
-        data: key,
+        key: key,
     });
 }
 
