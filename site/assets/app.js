@@ -33,7 +33,7 @@ function handleMessage(msg) {
         data = "";
     }
 
-    for(line of data.split("\n")) {
+    for(let line of data.split("\n")) {
         if(line.match(inputLinePattern)) {
             let inputMatches = Array.from(line.matchAll(inputKeyPattern));
 
