@@ -39,8 +39,10 @@ function handleMessage(msg) {
 
             for(const match of inputMatches) {
                 inputKeys.push(match[1]);
-                let inputButton = `<span class="key-input-button" onclick="clickKeyInput('${match[1]}')">${match[0]}</span>`;
-                line = line.replace(match[0], inputButton);
+
+                let inputWord = match[0].replace(/\[\S\]\s*/, '');
+                let inputButton = `<span class="key-input-button" onclick="clickKeyInput('${match[1]}')">${inputWord}</span>`;
+                line = line.replace(inputWord, inputButton);
             }
 
         } else if(line.length == 1) {
