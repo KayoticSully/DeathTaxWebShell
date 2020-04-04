@@ -99,7 +99,14 @@ func (s *Session) inputPump(wsConn *websocket.Conn) {
 	for {
 		_, msg, err = wsConn.ReadMessage()
 		if err != nil {
-			log.Println("read:", err)
+			if _, ok := err.(*websocket.CloseError); ok {
+				if err := s.process.Process.Kill(); err != nil {
+					log.Fatal("failed to kill process: ", err)
+				}
+			} else {
+				log.Println("read:", err)
+			}
+
 			return
 		}
 
@@ -124,6 +131,8 @@ func (s *Session) outputPump(wsConn *websocket.Conn) {
 		return
 	}
 
+	defer recover()
+	var lastLine = ""
 	for s.stdoutScanner.Scan() {
 		text = []byte(s.stdoutScanner.Text())
 
@@ -133,11 +142,20 @@ func (s *Session) outputPump(wsConn *websocket.Conn) {
 			text = []byte("\n")
 		}
 
-		err = wsConn.WriteMessage(websocket.TextMessage, text)
-		if err != nil {
-			log.Println("write:", err)
-			return
+		textStr := string(text)
+		if textStr != lastLine {
+			lastLine = textStr
+
+			err = wsConn.WriteMessage(websocket.TextMessage, text)
+			if err != nil {
+				log.Println("write:", err)
+				return
+			}
 		}
+	}
+
+	if s.stdoutScanner.Err() != nil {
+		log.Printf("Scanner Err: %s", s.stdoutScanner.Err())
 	}
 }
 
