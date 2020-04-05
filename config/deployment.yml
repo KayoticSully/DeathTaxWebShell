@@ -30,9 +30,9 @@ spec:
         - containerPort: 5000
         resources:
           requests:
-            cpu: 300m
+            cpu: 500m
           limits:
-            cpu: 300m
+            cpu: 500m
         livenessProbe:
           httpGet:
             path: /
