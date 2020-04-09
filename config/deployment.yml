@@ -47,23 +47,27 @@ kind: Service
 metadata:
   name: death-tax-web-shell-service
   namespace: death-tax
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: "deathtax.kayotic.io"
-    service.beta.kubernetes.io/do-loadbalancer-certificate-id: "4bb2ae61-688e-4bc0-98da-fd064f53bf37"
-    service.beta.kubernetes.io/do-loadbalancer-redirect-http-to-https: "true"
 spec:
-  type: LoadBalancer
   ports:
-    - name: https
-      protocol: TCP
-      port: 443
-      targetPort: 5000
-
-    - name: http
-      protocol: TCP
-      port: 80
-      targetPort: 5000
-
+  - name: http
+    targetPort: 5000
+    port: 80
   selector:
     app: death-tax-web-shell
-    
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: death-tax-web-shell-ingress
+  namespace: death-tax
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: deathtax.kayotic.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: death-tax-web-shell-service
+          servicePort: http

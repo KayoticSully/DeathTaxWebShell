@@ -131,7 +131,6 @@ func (s *Session) outputPump(wsConn *websocket.Conn) {
 		return
 	}
 
-	defer recover()
 	var lastLine = ""
 	for s.stdoutScanner.Scan() {
 		text = []byte(s.stdoutScanner.Text())
