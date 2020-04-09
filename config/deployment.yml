@@ -9,14 +9,14 @@ metadata:
   name: death-tax-web-shell
   namespace: death-tax
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: death-tax-web-shell
   strategy:
     rollingUpdate:
-      maxSurge: 2
-      maxUnavailable: 1
+      maxSurge: 1
+      maxUnavailable: 0
   minReadySeconds: 5
   template:
     metadata:
@@ -30,9 +30,9 @@ spec:
         - containerPort: 5000
         resources:
           requests:
-            cpu: 100m
+            cpu: 250m
           limits:
-            cpu: 100m
+            cpu: 250m
         livenessProbe:
           httpGet:
             path: /
@@ -54,6 +54,7 @@ spec:
     port: 80
   selector:
     app: death-tax-web-shell
+<<<<<<< HEAD
 ---
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
@@ -71,3 +72,6 @@ spec:
         backend:
           serviceName: death-tax-web-shell-service
           servicePort: http
+=======
+    
+>>>>>>> 10c8f60841680315908b1d5182074fd964b0d8d1
