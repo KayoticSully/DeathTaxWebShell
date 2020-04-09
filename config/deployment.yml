@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -54,7 +55,6 @@ spec:
     port: 80
   selector:
     app: death-tax-web-shell
-<<<<<<< HEAD
 ---
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
@@ -72,6 +72,3 @@ spec:
         backend:
           serviceName: death-tax-web-shell-service
           servicePort: http
-=======
-    
->>>>>>> 10c8f60841680315908b1d5182074fd964b0d8d1
