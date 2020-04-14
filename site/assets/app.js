@@ -87,6 +87,9 @@ function handleKeyEvent(event) {
     
     var key = event.key || event.keyCode;
     if (allowedKeys.includes(key.toUpperCase())) {
+        let lastInputLine = document.querySelector(lastLineSelector);
+        lastInputLine.innerHTML = lastInputLine.innerText || lastInputLine.textContent;
+        
         appendToLastLine(key);
         apiSocket.send(`${key}\n`);
     } else {
